@@ -38,7 +38,7 @@ Valores iniciais de serviços e horários são um modelo e precisam de validaç�
 - `config.js`: configurações por cliente.
 - `schedule.js`: regras de datas e horários.
 - `app.js`: catálogo, interação e integração com WhatsApp.
-- `assets/barbearia.svg`: ilustração original local; substitua por foto autorizada do cliente se desejar.
+- `assets/barbearia.jpg`: foto local usada na apresentação inicial.
 - `GUIA-DE-VENDA.md`: escopo e roteiro de entrega.
 - `test-schedule.cjs`: testes das regras de horários, executáveis com `node test-schedule.cjs`.
 - `.nojekyll`: publicação de arquivos estáticos.

@@ -4,7 +4,7 @@
 
 “Site de barbearia personalizado com catálogo de serviços, preços, equipe, localização e solicitação de horário pelo WhatsApp, adaptado para celular e computador.”
 
-Venda a personalização e implantação deste código. Entregue ao cliente uma cópia dos arquivos personalizados. A ilustração SVG é original desta entrega. Fotos, marcas e outros conteúdos fornecidos pelo cliente precisam de autorização adequada.
+Venda a personalização e implantação deste código. Entregue ao cliente uma cópia dos arquivos personalizados. A foto de apresentação veio do Unsplash: https://images.unsplash.com/photo-1503951914875-452162b0f3f1. Fotos, marcas e outros conteúdos fornecidos pelo cliente precisam de autorização adequada.
 
 ## O que solicitar do cliente
 
@@ -13,7 +13,7 @@ Nome comercial, logo (se houver), cores, número de WhatsApp, endereço, link de
 ## Entrega
 
 1. Duplique a pasta para o cliente e preencha `config.js`.
-2. Se usar uma foto, coloque em `assets` e substitua `assets/barbearia.svg` no CSS `.photo`. Revise também a descrição da imagem no HTML.
+2. Se usar uma foto, coloque em `assets` e substitua `assets/barbearia.jpg` no CSS `.photo`. Revise também a descrição da imagem no HTML.
 3. Confira textos e preços com o cliente.
 4. Publique na hospedagem acordada.
 5. Faça um pedido de teste, confira o destinatário e o conteúdo no WhatsApp, sem enviar a mensagem se não for necessário.
