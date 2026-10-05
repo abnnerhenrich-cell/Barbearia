@@ -1,0 +1,25 @@
+'use strict';
+(() => {
+ const c=window.SITE_CONFIG, S=window.BravoSchedule, $=id=>document.getElementById(id);
+ const money=n=>Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+ const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;};
+ document.title=c.title;document.querySelector('meta[name="description"]').content=c.description;
+ document.querySelectorAll('[data-brand]').forEach(n=>n.textContent=c.brand);document.querySelectorAll('[data-tagline]').forEach(n=>n.textContent=c.tagline);
+ $('hero-title').textContent=c.headline;$('intro').textContent=c.intro;$('about-text').textContent=c.about;$('initial').textContent=c.brand.slice(0,1)+'.';
+ const palette={background:'--bg',cream:'--cream',accent:'--accent'};for(const [key,value] of Object.entries(c.colors)){if(/^#[0-9a-f]{6}$/i.test(value)&&palette[key])document.documentElement.style.setProperty(palette[key],value);}
+ $('year').textContent=new Date().getFullYear();
+ c.services.forEach((s,i)=>{const card=el('article',undefined,'card'+(s.featured?' featured':''));card.append(el('div',String(i+1).padStart(2,'0')+'.','num'));if(s.featured)card.append(el('span','EXPERIÊNCIA COMPLETA','badge'));card.append(el('h3',s.name),el('p',s.description));const price=el('div',undefined,'price');price.append(el('strong',money(s.price)),el('span',`${s.duration} MIN`));const button=el('button','Agendar serviço');button.type='button';button.append(el('span','↗'));button.onclick=()=>{$('service').value=s.id;refresh();$('agendar').scrollIntoView({behavior:'smooth'});$('name').focus({preventScroll:true});};card.append(price,button);$('services').append(card);$('service').add(new Option(`${s.name} — ${money(s.price)}`,s.id));});
+ c.professionals.forEach(p=>$('professional').add(new Option(p,p)));
+ const dayNames=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+ if(c.address){const block=el('div');block.append(el('b','ENDEREÇO'),el('p',[c.address,c.city].filter(Boolean).join(' • ')));if(/^https:\/\//.test(c.mapsUrl)){const a=el('a','Como chegar ↗','secondary-link');a.href=c.mapsUrl;a.target='_blank';a.rel='noopener noreferrer';block.append(a);}$('contact-info').append(block);}
+ const hourBlock=el('div');hourBlock.append(el('b','HORÁRIOS'));const hourText=el('p');dayNames.forEach((name,i)=>{hourText.append(document.createTextNode(`${name}: ${(c.hours[i]||[]).map(([a,b])=>`${a} às ${b}`).join(' / ')||'fechado'}`),el('br'));});hourBlock.append(hourText);$('contact-info').append(hourBlock);
+ function updateDateRange(){const today=S.dateInfo(new Date(),c.timezone).date;$('date').min=today;$('date').max=S.addDays(today,c.advanceDays);}
+ function selectedService(){return c.services.find(s=>s.id===$('service').value);}
+ function refresh(){updateDateRange();const s=selectedService();$('total').textContent=s?money(s.price):'—';const previous=$('time').value;$('time').replaceChildren(new Option('Selecione um horário',''));const date=$('date').value;if(!date){$('status').textContent='';return;}const available=s?S.slots(c,date,s.duration):[];available.forEach(t=>$('time').add(new Option(t,t)));if(available.includes(previous))$('time').value=previous;$('status').textContent=available.length?'':'Não há opções nesse dia para o serviço escolhido. Selecione outra data.';}
+ function openWhatsApp(message){const number=c.whatsapp.replace(/\D/g,'');if(!/^55\d{10,11}$/.test(number)){$('status').textContent='O contato está em atualização. Tente novamente mais tarde.';$('agendar').scrollIntoView({behavior:'smooth'});return false;}const a=el('a');a.href=`https://wa.me/${number}?text=${encodeURIComponent(message)}`;a.target='_blank';a.rel='noopener noreferrer';document.body.append(a);a.click();a.remove();return true;}
+ $('booking').onsubmit=e=>{e.preventDefault();const name=$('name').value.trim();if(name.length<2){$('status').textContent='Informe seu nome com pelo menos 2 caracteres.';$('name').focus();return;}const s=selectedService();if(!s||!S.slots(c,$('date').value,s.duration).includes($('time').value)){$('status').textContent='Selecione uma data e um horário válidos.';refresh();return;}const date=$('date').value.split('-').reverse().join('/');const message=`Olá, ${c.brand}! Gostaria de solicitar um agendamento.\nNome: ${name}\nServiço: ${s.name}\nValor: ${money(s.price)}\nDuração: ${s.duration} minutos\nProfissional: ${$('professional').value}\nData: ${date}\nHorário: ${$('time').value}\nAguardo confirmação de disponibilidade.`;if(openWhatsApp(message))$('status').textContent='Mensagem preparada. Envie no WhatsApp e aguarde a confirmação da barbearia.';};
+ $('date').addEventListener('change',refresh);$('service').addEventListener('change',refresh);window.addEventListener('focus',refresh);
+ $('contact').onclick=$('floating').onclick=()=>openWhatsApp(`Olá, ${c.brand}! Gostaria de saber mais sobre os serviços.`);
+ $('privacy-contact').onclick=()=>openWhatsApp(`Olá, ${c.brand}! Tenho uma dúvida sobre o tratamento dos meus dados.`);
+ refresh();
+})();
